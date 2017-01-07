@@ -64,42 +64,62 @@ articleView.setTeasers = function() {
   });
 };
 
-articleView.initNewArticlePage = function() {
+articleView.initNewArticlePage = function(){
   // DONE: Ensure the main .tab-content area is revealed. We might add more tabs later.
-$('main .tab-content').show();
+  $('.tab-content').show();
   // DONE: The new articles we create will be copy/pasted into our source data file.
   // Set up this "export" functionality. We can hide the export field for now, and show it once we have data to export.
-  $('#export-field').hide();
-  $('#export-field').on('focus', function() {
-    $(this).val();
-  }
+  // $('#export-field').hide();
+  $('#new-form').change(function(){
+    articleView.create()
+  });
+    // $(this).val();
 
-  // TODO: Add an event listener/handler to update the preview and the export field if any inputs change.
+  // DONE: Add an event listener/handler to update the preview and the export field if any inputs change.
 };
 
 articleView.create = function() {
   // DONE: Set up a var to hold the new article we are creating.
   // Clear out the #articles element, so we can put in the updated preview
-  var articleNew ;
-$('#articles').empty();
-  // TODO: Instantiate an article based on what's in the form fields:
+  var articleNew;
+  //  = Handlebars.compile($('#new-form').text());
 
-  // TODO: Use our interface to the Handblebars template to put this new article into the DOM:
+  // DONE: Instantiate an article based on what's in the form fields:
+  articleNew = new Article({
+    title :$('#article-title').val(),
+    author :$('#article-author').val(),
+    body :$('#article-body').val(),
+    category :$('#article-category').val(),
+    authorUrl :$('#article-author-url').val(),
+    publichedOn :$('#article-publiched').val()
+
+  });
+  $('li[data-content="articles"]').click(function(){
+    $('#articles').html('');
+    $('#articles').append(articleNew.toHtml());
+  })
+  // DOne: Use our interface to the Handblebars template to put this new article into the DOM:
 
   // DONE: Activate the highlighting of any code blocks:
   $(document).ready(function() {
     $('pre code').each(function(i, block) {
     hljs.highlightBlock(block);
+    })
   });
 
-  // TODO: Export the new article as JSON, so it's ready to copy/paste into blogArticles.js:
-};
+  // DOne: Export the new article as JSON, so it's ready to copy/paste into blogArticles.js:
+  $('li[data-content=write]').click(function(){
+    var stringifiedArticle = JSON.stringify(articleNew);
+    localStorage.setItem('New Article', stringifiedArticle);
+  });
 
 
-articleView.initIndexPage = function() {
-  articleView.populateFilters();
-  articleView.handleCategoryFilter();
-  articleView.handleAuthorFilter();
-  articleView.handleMainNav();
-  articleView.setTeasers();
+
+  articleView.initIndexPage = function() {
+    articleView.populateFilters();
+    articleView.handleCategoryFilter();
+    articleView.handleAuthorFilter();
+    articleView.handleMainNav();
+    articleView.setTeasers();
+  }
 };
